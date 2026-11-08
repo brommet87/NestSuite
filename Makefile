@@ -4,7 +4,7 @@ SCHEME        := NestSuite
 DERIVED       := build/DerivedData
 PACKAGE       := Packages/NestKit
 
-.PHONY: help bootstrap generate build test test-package test-app lint format icon run clean
+.PHONY: help bootstrap generate build test test-package test-app lint format icon run nestctl clean
 
 help: ## Show available tasks
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -39,6 +39,13 @@ icon: ## Re-render the app icon from code
 
 run: build ## Build and launch the app
 	open $(DERIVED)/Build/Products/Debug/NestSuite.app
+
+nestctl: ## Build and sign the nestctl CLI (build/nestctl)
+	swift build --package-path $(PACKAGE) --product nestctl -c release
+	mkdir -p build
+	cp "$$(swift build --package-path $(PACKAGE) -c release --show-bin-path)/nestctl" build/nestctl
+	codesign --force --sign - --entitlements Scripts/nestctl.entitlements --options runtime build/nestctl
+	@echo "Built build/nestctl — copy it into your PATH, e.g. /usr/local/bin"
 
 clean: ## Remove build products
 	rm -rf build NestSuite.xcodeproj $(PACKAGE)/.build

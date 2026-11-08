@@ -63,11 +63,23 @@ the same issue appear inline next to a field or in a list.
 
 ### NestVirtualization
 
-The only module that imports `Virtualization`. In 0.1 it provides `HostCapabilities.current()`.
-From 0.2 it contains the engine that builds a `VZVirtualMachineConfiguration` from a
-`VirtualMachineConfiguration`, always calls `validate()` before creating a `VZVirtualMachine`
-(creating one from an invalid configuration raises an Objective-C exception), and translates
-framework callbacks into `VirtualMachineEvent`s. See [ADR 0003](adr/0003-swift6-concurrency-model.md).
+The only module that imports `Virtualization`.
+
+| Type | Responsibility |
+|---|---|
+| `MachinePreparation` | Creates per-machine files once: sparse disk image, EFI variable store, machine identifier, MAC address |
+| `ConfigurationBuilder` | Translates a `VirtualMachineConfiguration` into a `VZVirtualMachineConfiguration` — all virtio, nothing emulated |
+| `VirtualMachineSession` | Owns one `VZVirtualMachine` on the main actor (ADR 0007), drives the state machine, holds the `BundleLock` while running |
+| `HostCapabilities.current()` | Framework limits and Rosetta availability |
+
+The session always calls `validate()` before creating a `VZVirtualMachine` (an invalid configuration
+raises an Objective-C exception in the initializer) and translates framework callbacks into
+`VirtualMachineEvent`s.
+
+Virtual hardware of a Linux machine: EFI boot loader, virtio block disk, optional read-only USB
+installer drive, virtio network (NAT, stable MAC), virtio graphics, USB keyboard and pointer, virtio
+sound (output only — microphone will be opt-in), entropy, memory balloon, SPICE agent port for the
+clipboard, virtiofs shares and Rosetta, serial console to `Console.log`.
 
 ### NestDesign
 

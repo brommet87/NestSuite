@@ -148,6 +148,73 @@ struct CommandTests {
         #expect(try library.entries().isEmpty)
     }
 
+    // MARK: create
+
+    @Test("create uses automatic resources by default")
+    func createAuto() throws {
+        #expect(run(["create", "dev", "--json"]) == 0)
+        guard case let .machine(_, config) = try #require(try library.entry(named: "dev")) else {
+            Issue.record("expected a machine")
+            return
+        }
+        #expect(config.cpuCount == 4)
+        #expect(config.memorySize == .gibibytes(4))
+        #expect(config.network == .nat)
+    }
+
+    @Test("create accepts explicit resources, shares and flags")
+    func createExplicit() throws {
+        let folder = root.appending(path: "project")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let share = "\(folder.path(percentEncoded: false)):workspace:ro"
+        #expect(run([
+            "create", "dev", "--cpus", "2", "--memory", "2GiB", "--disk", "16GiB",
+            "--share", share, "--no-clipboard", "--offline",
+        ]) == 0)
+        guard case let .machine(_, config) = try #require(try library.entry(named: "dev")) else { return }
+        #expect(config.cpuCount == 2)
+        #expect(config.diskSize == .gibibytes(16))
+        #expect(config.sharedFolders.map(\.name) == ["workspace"])
+        #expect(config.sharedFolders.first?.isReadOnly == true)
+        #expect(!config.isClipboardSharingEnabled)
+        #expect(config.network == .disconnected)
+    }
+
+    @Test("create rejects bad values with usage or input errors", arguments: [
+        InvalidCreate(arguments: ["--memory", "8GB"], exitCode: 64),
+        InvalidCreate(arguments: ["--cpus", "zero"], exitCode: 64),
+        InvalidCreate(arguments: ["--share", "/definitely/missing"], exitCode: 64),
+        InvalidCreate(arguments: ["--cpus", "99"], exitCode: 65),
+    ])
+    func createInvalid(_ example: InvalidCreate) {
+        #expect(run(["create", "dev"] + example.arguments) == example.exitCode)
+    }
+
+    struct InvalidCreate: Sendable, CustomTestStringConvertible {
+        let arguments: [String]
+        let exitCode: Int32
+        var testDescription: String {
+            arguments.joined(separator: " ")
+        }
+    }
+
+    @Test("create refuses an existing name")
+    func createDuplicate() throws {
+        try makeMachine("dev")
+        #expect(run(["create", "dev"]) == 73)
+    }
+
+    @Test("cloning, snapshotting and removing a running machine is refused with 75")
+    func runningMachine() throws {
+        let bundle = try makeMachine("dev")
+        let lock = try BundleLock(bundle: bundle)
+        defer { lock.release() }
+        #expect(run(["clone", "dev", "copy"]) == 75)
+        #expect(run(["snapshot", "create", "dev", "s1"]) == 75)
+        #expect(run(["rm", "dev"]) == 75)
+        #expect(run(["snapshot", "list", "dev"]) == 0, "listing snapshots is read-only")
+    }
+
     // MARK: snapshot
 
     @Test("snapshot create, list as tree, restore with --yes, delete")

@@ -1,6 +1,6 @@
 # 0003. Swift 6 strict concurrency and actor-owned VMs
 
-- Status: Accepted
+- Status: Accepted — the per-VM actor and private queue are superseded by [ADR 0007](0007-main-actor-machine-sessions.md)
 - Date: 2026-11-08
 
 ## Context

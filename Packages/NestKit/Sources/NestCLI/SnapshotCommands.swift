@@ -28,12 +28,17 @@ struct SnapshotCommand: ParsableCommand {
     }
 
     /// Resolves the machine and its snapshot store, or fails with exit code 66.
-    static func store(for machine: String, options: GlobalOptions, renderer: Renderer) throws -> SnapshotStore {
+    static func store(
+        for machine: String, options: GlobalOptions, renderer: Renderer, requireStopped: Bool = true
+    ) throws -> SnapshotStore {
         guard let entry = try options.resolvedLibrary().entry(named: machine) else {
             throw renderer.fail("no machine named “\(machine)” (see `nestctl list`)", code: NestExitCode.notFound)
         }
         guard case .machine = entry else {
             throw renderer.fail("“\(machine)” is damaged", code: NestExitCode.invalidInput)
+        }
+        if requireStopped {
+            try renderer.ensureNotRunning(entry.id, name: machine)
         }
         return SnapshotStore(bundle: VirtualMachineBundle(url: entry.id))
     }
@@ -92,7 +97,13 @@ struct SnapshotCommand: ParsableCommand {
 
         func run() throws {
             let renderer = Renderer(json: options.json, sink: Environment.current.sink)
-            let store = try SnapshotCommand.store(for: machine, options: options, renderer: renderer)
+            // Listing is read-only, so it works while the machine runs.
+            let store = try SnapshotCommand.store(
+                for: machine,
+                options: options,
+                renderer: renderer,
+                requireStopped: false
+            )
             let snapshots = try store.list()
             let head = store.head()
             let dtos = snapshots.map {

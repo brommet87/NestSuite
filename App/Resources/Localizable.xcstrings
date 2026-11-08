@@ -1,6 +1,46 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%lld virtual machine(s) are running. NestSuite asks each one to shut down before quitting.": {
+      "localizations": {
+        "de": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Eine virtuelle Maschine läuft. NestSuite bittet sie vor dem Beenden herunterzufahren."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld virtuelle Maschinen laufen. NestSuite bittet jede vor dem Beenden herunterzufahren."
+                }
+              }
+            }
+          }
+        },
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "One virtual machine is running. NestSuite asks it to shut down before quitting."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld virtual machines are running. NestSuite asks each one to shut down before quitting."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "A virtual machine with this name already exists.": {
       "localizations": {
         "de": {
@@ -21,12 +61,32 @@
         }
       }
     },
+    "Ask the operating system to shut down": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Betriebssystem bitten, herunterzufahren"
+          }
+        }
+      }
+    },
     "Available": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Verfügbar"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen"
           }
         }
       }
@@ -63,6 +123,46 @@
         }
       }
     },
+    "Choose…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auswählen …"
+          }
+        }
+      }
+    },
+    "Create": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erstellen"
+          }
+        }
+      }
+    },
+    "Create a new virtual machine (⌘N)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue virtuelle Maschine erstellen (⌘N)"
+          }
+        }
+      }
+    },
+    "Create and Start": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erstellen und starten"
+          }
+        }
+      }
+    },
     "Created with a newer NestSuite (format %lld, this version reads %lld). Update NestSuite to open it.": {
       "localizations": {
         "de": {
@@ -80,6 +180,7 @@
       }
     },
     "Creating virtual machines arrives in version 0.2.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -119,12 +220,52 @@
         }
       }
     },
+    "Display of %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildschirm von %@"
+          }
+        }
+      }
+    },
+    "Download an ARM64 (aarch64) installer image from your distribution, e.g. Ubuntu Server or Fedora.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lade ein ARM64-Installationsimage (aarch64) deiner Distribution, z. B. Ubuntu Server oder Fedora."
+          }
+        }
+      }
+    },
     "Enter a name for the virtual machine.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Gib einen Namen für die virtuelle Maschine ein."
+          }
+        }
+      }
+    },
+    "Force Shut Down": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sofort ausschalten"
+          }
+        }
+      }
+    },
+    "Force Shut Down turns the machine off immediately, like pulling the plug": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Sofort ausschalten“ schaltet die Maschine sofort ab – wie Stecker ziehen"
           }
         }
       }
@@ -155,6 +296,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hardware"
+          }
+        }
+      }
+    },
+    "Installer": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installationsimage"
           }
         }
       }
@@ -199,12 +350,32 @@
         }
       }
     },
+    "More": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehr"
+          }
+        }
+      }
+    },
     "Move to Trash": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "In den Papierkorb legen"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
           }
         }
       }
@@ -279,6 +450,16 @@
         }
       }
     },
+    "OK": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
     "Off": {
       "localizations": {
         "de": {
@@ -319,6 +500,26 @@
         }
       }
     },
+    "Pause": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anhalten"
+          }
+        }
+      }
+    },
+    "Pause the virtual machine": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Virtuelle Maschine anhalten"
+          }
+        }
+      }
+    },
     "Processors": {
       "localizations": {
         "de": {
@@ -335,6 +536,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bibliothek neu laden"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fortsetzen"
           }
         }
       }
@@ -429,12 +640,62 @@
         }
       }
     },
+    "Show Display": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildschirm zeigen"
+          }
+        }
+      }
+    },
     "Show in Finder": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Im Finder zeigen"
+          }
+        }
+      }
+    },
+    "Shut Down": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herunterfahren"
+          }
+        }
+      }
+    },
+    "Shut Down Running Virtual Machines?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laufende virtuelle Maschinen herunterfahren?"
+          }
+        }
+      }
+    },
+    "Shut Down and Quit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herunterfahren und beenden"
+          }
+        }
+      }
+    },
+    "Shut down the virtual machine before moving it to the Trash.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahre die virtuelle Maschine herunter, bevor du sie in den Papierkorb legst."
           }
         }
       }
@@ -449,7 +710,38 @@
         }
       }
     },
+    "Start": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starten"
+          }
+        }
+      }
+    },
+    "Start from Installer…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vom Installationsimage starten …"
+          }
+        }
+      }
+    },
+    "Start it from the library window.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starte sie im Bibliotheksfenster."
+          }
+        }
+      }
+    },
     "Status": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -465,6 +757,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Unterstützt"
+          }
+        }
+      }
+    },
+    "The Action Couldn’t Be Completed": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Aktion konnte nicht ausgeführt werden"
           }
         }
       }
@@ -539,6 +841,16 @@
         }
       }
     },
+    "This Virtual Machine Isn’t Running": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese virtuelle Maschine läuft nicht"
+          }
+        }
+      }
+    },
     "This virtual machine could not be read.": {
       "localizations": {
         "de": {
@@ -569,6 +881,16 @@
         }
       }
     },
+    "Ubuntu": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ubuntu"
+          }
+        }
+      }
+    },
     "Use a name with at most %lld characters.": {
       "localizations": {
         "de": {
@@ -595,6 +917,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Roadmap ansehen"
+          }
+        }
+      }
+    },
+    "Virtual Machine": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Virtuelle Maschine"
           }
         }
       }

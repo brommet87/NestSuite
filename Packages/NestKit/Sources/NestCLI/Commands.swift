@@ -8,17 +8,18 @@ import NestSpec
 import NestVirtualization
 
 /// `nestctl` — the NestSuite command-line interface. Reference: `docs/cli.md`.
-public struct NestCtl: ParsableCommand {
+public struct NestCtl: AsyncParsableCommand {
     public static let configuration = CommandConfiguration(
         commandName: "nestctl",
         abstract: "Manage NestSuite virtual machines from the command line.",
         discussion: """
         Every command supports --json for scripting. Exit codes: 0 success, 1 unexpected error, \
-        64 usage error, 65 invalid input, 66 not found, 73 cannot create.
+        64 usage error, 65 invalid input, 66 not found, 73 cannot create, 75 machine busy.
         """,
         version: "0.1.0",
         subcommands: [
-            List.self, Inspect.self, Validate.self, Clone.self, SnapshotCommand.self, Remove.self, Host.self,
+            List.self, Inspect.self, Create.self, Run.self, Logs.self, Validate.self, Clone.self, SnapshotCommand.self,
+            Remove.self, Host.self,
         ]
     )
 
@@ -268,6 +269,7 @@ struct Clone: ParsableCommand {
         guard case .machine = entry else {
             throw renderer.fail("“\(source)” is damaged and cannot be cloned", code: NestExitCode.invalidInput)
         }
+        try renderer.ensureNotRunning(entry.id, name: source)
         let names = count == 1 ? [name] : (1 ... count).map { "\(name)-\($0)" }
         if let existing = try names.first(where: { try library.entry(named: $0) != nil }) {
             throw renderer.fail("a machine named “\(existing)” already exists", code: NestExitCode.cannotCreate)
@@ -316,6 +318,7 @@ struct Remove: ParsableCommand {
             guard let entry = try library.entry(named: name) else {
                 throw renderer.fail("no machine named “\(name)”; nothing was removed", code: NestExitCode.notFound)
             }
+            try renderer.ensureNotRunning(entry.id, name: name)
             targets.append(entry)
         }
         var removed: [String] = []

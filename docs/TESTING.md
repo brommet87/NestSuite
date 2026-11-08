@@ -7,7 +7,8 @@
 | `NestCore` unit tests | Swift Testing | `swift test`, CI | Validation, state machine, bundles, coding — exhaustive, parameterized |
 | `NestVirtualization` tests | Swift Testing | `swift test`, CI | Host capability mapping; configuration building (0.2) |
 | App tests | Swift Testing via `xcodebuild test` | CI | View models with fake library/workspace/engine |
-| Integration tests | Swift Testing, tagged | locally / opt-in workflow | Boot a real Linux VM (needs entitlement and an image download) |
+| Engine tests | Swift Testing | `swift test`, CI | Device configuration, sparse disks, identity files, locking — no entitlement needed |
+| Integration test | `Scripts/integration-boot-test.sh <iso>` | locally | Boots a real ARM64 installer with a signed `nestctl`, checks it stays up, refuses a second start and stops cleanly |
 | Manual UI review | checklist | every UI PR | See [design/ACCESSIBILITY.md](design/ACCESSIBILITY.md) |
 
 Rules:
@@ -15,8 +16,11 @@ Rules:
   locations and side effects).
 - Every bug fix comes with a test that fails without the fix.
 - Tests never touch the user’s real library; they use temporary directories.
-- Tests that need large downloads (Linux images, macOS IPSW) never run in the default suite. They are
-  enabled with `NESTSUITE_INTEGRATION=1` (from 0.2).
+- Tests that need an entitlement or large downloads (Linux images, macOS IPSW) never run in the
+  default suite; use the integration script.
+- Debug builds accept `-NestSuiteAutostart <name>` and `-NestSuiteInstaller <path>` to start a machine
+  and open its window without clicking, for UI checks and documentation screenshots. Release builds
+  don’t contain this code.
 
 ## Running
 ```bash

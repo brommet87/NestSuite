@@ -3,7 +3,9 @@
 
 import NestCore
 import NestDesign
+import NestVirtualization
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// First-run screen: explains what NestSuite does and what comes next.
 struct WelcomeView: View {
@@ -27,19 +29,36 @@ struct WelcomeView: View {
     }
 }
 
-/// Overview of a machine's configuration.
+/// Overview of a machine: status and primary actions on top, configuration below.
 struct MachineDetailView: View {
     @Environment(LibraryModel.self) private var library
-    let configuration: VirtualMachineConfiguration
+    @Environment(\.openWindow) private var openWindow
+    let session: VirtualMachineSession
+    @State private var isPickingInstaller = false
+
+    private var configuration: VirtualMachineConfiguration {
+        session.configuration
+    }
 
     var body: some View {
         let issues = ConfigurationValidator(host: library.host).issues(in: configuration)
         Form {
             Section {
-                LabeledContent("Operating System") { Text(configuration.guest.localizedName) }
-                LabeledContent("Status") { StatusBadge(state: .stopped) }
+                HStack(spacing: Tokens.Spacing.large) {
+                    GuestIcon(guest: configuration.guest)
+                        .scaleEffect(1.6)
+                        .frame(width: 48, height: 48)
+                    VStack(alignment: .leading, spacing: Tokens.Spacing.xSmall) {
+                        Text(verbatim: configuration.name).font(.title2.weight(.semibold))
+                        StatusBadge(state: session.state)
+                    }
+                    Spacer()
+                    primaryActions
+                }
+                .padding(.vertical, Tokens.Spacing.small)
             }
             Section("Hardware") {
+                LabeledContent("Operating System") { Text(configuration.guest.localizedName) }
                 LabeledContent("Processors") { Text(configuration.cpuCount, format: .number) }
                 LabeledContent("Memory") { Text(verbatim: configuration.memorySize.description) }
                 // Same binary units as memory, so an 80 GB disk reads "80 GB", not "85.9 GB".
@@ -65,6 +84,34 @@ struct MachineDetailView: View {
             }
         }
         .formStyle(.grouped)
+        .toolbar { MachineToolbar(session: session) }
+        .fileImporter(
+            isPresented: $isPickingInstaller,
+            allowedContentTypes: [UTType(filenameExtension: "iso") ?? .diskImage]
+        ) { result in
+            guard case let .success(url) = result else { return }
+            _ = url.startAccessingSecurityScopedResource()
+            openWindow(id: "machine", value: session.bundle.url)
+            Task { await library.start(session, installer: url) }
+        }
+    }
+
+    @ViewBuilder
+    private var primaryActions: some View {
+        if session.state.isActive {
+            Button("Show Display") { openWindow(id: "machine", value: session.bundle.url) }
+                .buttonStyle(.borderedProminent)
+        } else {
+            HStack(spacing: Tokens.Spacing.small) {
+                Button("Start from Installer…") { isPickingInstaller = true }
+                Button("Start") {
+                    openWindow(id: "machine", value: session.bundle.url)
+                    Task { await library.start(session) }
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(session.state.isTransitioning)
+            }
+        }
     }
 }
 
