@@ -65,16 +65,29 @@ func rhombus(centerY: CGFloat) -> CGPath {
     )
 }
 
-let lower = rhombus(centerY: 440)
-context.saveGState()
-context.addPath(lower)
-context.clip()
-context.drawLinearGradient(
-    gradient([violet, indigo]), start: CGPoint(x: 230, y: 440), end: CGPoint(x: 800, y: 440), options: []
-)
-context.restoreGState()
+/// Fills a layer with a horizontal gradient and a soft shadow, like the stacked plates of the logo.
+func drawLayer(centerY: CGFloat, colors: [CGColor], shadowAlpha: CGFloat) {
+    let path = rhombus(centerY: centerY)
+    context.saveGState()
+    context.setShadow(offset: CGSize(width: 0, height: -10), blur: 24, color: color(0x2A1F8F, shadowAlpha))
+    context.addPath(path)
+    context.setFillColor(colors[0])
+    context.fillPath()
+    context.restoreGState()
+    context.saveGState()
+    context.addPath(path)
+    context.clip()
+    context.drawLinearGradient(
+        gradient(colors), start: CGPoint(x: 230, y: centerY), end: CGPoint(x: 800, y: centerY), options: []
+    )
+    context.restoreGState()
+}
 
-let upper = rhombus(centerY: 555)
+// Three stacked layers (bottom to top), as in the brand logo.
+drawLayer(centerY: 400, colors: [violet, indigo], shadowAlpha: 0.30)
+drawLayer(centerY: 478, colors: [violet, azure], shadowAlpha: 0.35)
+
+let upper = rhombus(centerY: 575)
 context.saveGState()
 context.setShadow(offset: CGSize(width: 0, height: -18), blur: 36, color: color(0x3B2FB0, 0.45))
 context.addPath(upper)
@@ -94,13 +107,13 @@ context.setStrokeColor(color(0xFFFFFF))
 context.setLineWidth(30)
 context.setLineCap(.round)
 context.setLineJoin(.round)
-let screen = CGRect(x: 420, y: 528, width: 184, height: 124)
+let screen = CGRect(x: 418, y: 552, width: 188, height: 128)
 context.addPath(CGPath(roundedRect: screen, cornerWidth: 26, cornerHeight: 26, transform: nil))
 context.strokePath()
-context.move(to: CGPoint(x: 512, y: 528))
-context.addLine(to: CGPoint(x: 512, y: 484))
-context.move(to: CGPoint(x: 470, y: 484))
-context.addLine(to: CGPoint(x: 554, y: 484))
+context.move(to: CGPoint(x: 512, y: 552))
+context.addLine(to: CGPoint(x: 512, y: 510))
+context.move(to: CGPoint(x: 468, y: 510))
+context.addLine(to: CGPoint(x: 556, y: 510))
 context.strokePath()
 
 guard let image = context.makeImage(),

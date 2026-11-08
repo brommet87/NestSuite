@@ -18,20 +18,22 @@ public struct BrandMark: View {
         GeometryReader { proxy in
             let side = min(proxy.size.width, proxy.size.height)
             ZStack {
+                // Three stacked layers, bottom to top, as in the brand logo.
                 layer(side: side)
-                    .fill(LinearGradient(
-                        colors: [Tokens.Brand.violet, Tokens.Brand.indigo],
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    ))
-                    .offset(y: side * 0.14)
+                    .fill(horizontalGradient(Tokens.Brand.violet, Tokens.Brand.indigo))
+                    .offset(y: side * 0.24)
+                layer(side: side)
+                    .fill(horizontalGradient(Tokens.Brand.violet, Tokens.Brand.azure))
+                    .shadow(color: Tokens.Brand.indigo.opacity(0.3), radius: side * 0.03, y: side * 0.02)
+                    .offset(y: side * 0.11)
                 layer(side: side)
                     .fill(Tokens.Brand.gradient)
                     .shadow(color: Tokens.Brand.indigo.opacity(0.35), radius: side * 0.04, y: side * 0.03)
+                    .offset(y: -side * 0.03)
                 DisplayGlyph()
                     .stroke(.white, style: StrokeStyle(lineWidth: side * 0.03, lineCap: .round, lineJoin: .round))
                     .frame(width: side * 0.26, height: side * 0.22)
-                    .offset(y: -side * 0.01)
+                    .offset(y: -side * 0.04)
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
         }
@@ -39,6 +41,10 @@ public struct BrandMark: View {
         .accessibilityElement()
         .accessibilityHidden(accessibilityLabel == nil)
         .accessibilityLabel(accessibilityLabel ?? Text(verbatim: ""))
+    }
+
+    private func horizontalGradient(_ start: Color, _ end: Color) -> LinearGradient {
+        LinearGradient(colors: [start, end], startPoint: .leading, endPoint: .trailing)
     }
 
     /// A rhombus with generously rounded corners.
