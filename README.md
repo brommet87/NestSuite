@@ -22,9 +22,13 @@ snapshots, and a scriptable command line — as a transparent, auditable open-so
 It is built directly on Apple’s public `Virtualization.framework` and `Hypervisor.framework`.
 
 > [!IMPORTANT]
-> NestSuite is in **early development (0.1, preview)**. This version sets up the app, the VM library
-> and the design system. Creating and running virtual machines arrives in 0.2. See the
-> [roadmap](ROADMAP.md).
+> NestSuite is in **early development**. Linux machines can be created, installed from an ARM64
+> installer image and run — in the app and from the command line. macOS machines and many comfort
+> features are still ahead. See the [roadmap](ROADMAP.md).
+
+<p align="center">
+  <img src="docs/images/linux-machine.png" alt="Alpine Linux booted in a NestSuite machine window" width="760">
+</p>
 
 <p align="center">
   <img src="docs/images/library-detail.png" alt="The NestSuite library window showing a macOS and a Linux virtual machine" width="760">
@@ -40,8 +44,11 @@ It is built directly on Apple’s public `Virtualization.framework` and `Hypervi
 | `nestctl` — list, inspect, validate, clone, snapshot, rm; JSON output, exit codes | ✅ 0.1 |
 | Linked clones and snapshots with branching (APFS copy-on-write) | ✅ 0.1 |
 | Design system, English + German UI, VoiceOver labels | ✅ 0.1 |
-| Create Linux VMs (ARM64) and macOS VMs with a guided assistant | 🚧 0.2 |
-| Run, pause, suspend/resume, shared folders, shared clipboard, Rosetta for Linux | 🚧 0.2–0.3 |
+| Create and run Linux machines from any ARM64 installer ISO — app and `nestctl run` | ✅ 0.2 |
+| Display window with auto-resize, pause/resume, clean shutdown, safe quit | ✅ 0.2 |
+| Shared folders, shared clipboard, Rosetta, sound (wired; guest setup guides pending) | 🚧 0.2 |
+| Image catalog, `nestctl up` from a Nestfile, cloud-init | 🚧 0.2 |
+| macOS machines | 🗺️ 0.3 |
 | Isolated machines for untrusted code and coding agents, SSH, daemon, HTTP API, MCP server | 🗺️ 0.3–0.5 |
 | `name.nest.local` with automatic HTTPS, port forwarding, file events for hot-reload | 🗺️ 0.5–0.6 |
 | OCI image push/pull, containers, Kubernetes | 🗺️ 0.7–0.9 |
@@ -84,6 +91,8 @@ machines:
 ```
 
 ```bash
+nestctl create dev --memory 8GiB --share .:workspace
+nestctl run dev --iso ubuntu-arm64.iso --console   # install Linux right in the terminal
 nestctl validate --strict          # CI-friendly, exit code 65 on problems
 nestctl clone ubuntu-base ci --count 20   # instant disposable machines
 nestctl snapshot create dev before-upgrade

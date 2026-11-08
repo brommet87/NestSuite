@@ -36,15 +36,31 @@ struct LibraryView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    // Creation assistant arrives in 0.2 (see ROADMAP.md).
+                    library.isShowingNewMachine = true
                 } label: {
                     Label("New Virtual Machine", systemImage: "plus")
                 }
-                .help("Creating virtual machines arrives in version 0.2.")
-                .disabled(true)
+                .help("Create a new virtual machine (⌘N)")
             }
         }
         .navigationTitle(navigationTitle)
+        .sheet(isPresented: $library.isShowingNewMachine) {
+            NewMachineSheet(host: library.host)
+                .environment(library)
+        }
+        .alert(
+            Text("The Action Couldn’t Be Completed"),
+            isPresented: Binding(get: { library.engineError != nil }, set: {
+                if !$0 {
+                    library.engineError = nil
+                }
+            }),
+            presenting: library.engineError
+        ) { _ in
+            Button("OK", role: .cancel) {}
+        } message: { message in
+            Text(verbatim: message)
+        }
     }
 
     @ViewBuilder
@@ -52,8 +68,8 @@ struct LibraryView: View {
         switch (library.loadState, library.selectedEntry) {
         case let (.failed(message), _):
             LibraryErrorView(message: message)
-        case let (_, .some(.machine(_, configuration))):
-            MachineDetailView(configuration: configuration)
+        case let (_, .some(.machine(bundle, configuration))):
+            MachineDetailView(session: library.session(for: bundle, configuration: configuration))
         case let (_, .some(.damaged(bundle, error))):
             DamagedBundleView(bundle: bundle, error: error)
         case (.loaded, .none) where library.isEmpty:
@@ -76,6 +92,7 @@ struct LibraryView: View {
 
 /// One row in the sidebar.
 struct LibrarySidebarRow: View {
+    @Environment(LibraryModel.self) private var library
     let entry: LibraryEntry
 
     var body: some View {
@@ -85,7 +102,7 @@ struct LibrarySidebarRow: View {
                 VStack(alignment: .leading, spacing: Tokens.Spacing.xxSmall) {
                     Text(verbatim: configuration.name)
                         .lineLimit(1)
-                    StatusBadge(state: .stopped)
+                    StatusBadge(state: library.state(of: entry))
                         .font(.caption)
                 }
             } icon: {

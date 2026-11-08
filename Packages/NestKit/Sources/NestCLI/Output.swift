@@ -15,6 +15,7 @@ public enum NestExitCode {
     public static let invalidInput = ExitCode(65) // EX_DATAERR  Nestfile or configuration invalid
     public static let notFound = ExitCode(66) // EX_NOINPUT  machine or file not found
     public static let cannotCreate = ExitCode(73) // EX_CANTCREAT target exists / cannot be written
+    public static let temporaryFailure = ExitCode(75) // EX_TEMPFAIL  machine busy (running elsewhere)
 }
 
 /// Where command output goes. Abstracted so tests can capture it.
@@ -61,6 +62,16 @@ struct Renderer {
             sink.writeError("error: \(message)")
         }
         return code
+    }
+}
+
+extension Renderer {
+    /// Fails with exit code 75 when the machine is running (its bundle lock is held), because cloning,
+    /// snapshotting or deleting a running machine would capture or destroy a disk in use.
+    func ensureNotRunning(_ bundleURL: URL, name: String) throws {
+        if BundleLock.isLocked(VirtualMachineBundle(url: bundleURL)) {
+            throw fail("“\(name)” is running; shut it down first", code: NestExitCode.temporaryFailure)
+        }
     }
 }
 

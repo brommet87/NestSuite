@@ -40,7 +40,10 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
-        .executableTarget(name: "nestctl", dependencies: ["NestCLI"]),
+        .executableTarget(
+            name: "nestctl",
+            dependencies: ["NestCLI", .product(name: "ArgumentParser", package: "swift-argument-parser")]
+        ),
         .testTarget(name: "NestCoreTests", dependencies: ["NestCore"]),
         .testTarget(name: "NestSpecTests", dependencies: ["NestSpec"]),
         .testTarget(name: "NestVirtualizationTests", dependencies: ["NestVirtualization"]),

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- nestctl runs virtual machines itself (`nestctl run`), so it needs the same entitlement as the app. -->
+	<key>com.apple.security.virtualization</key>
+	<true/>
+</dict>
+</plist>

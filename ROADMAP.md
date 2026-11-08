@@ -11,7 +11,7 @@ starts. Dates are intentionally absent: this is a volunteer-driven open-source p
 3. **Feels like the Mac.** Native SwiftUI app, menu bar, Finder and notifications integration.
 4. **Open by default.** Open guest tools, a documented host–guest protocol, no telemetry, works offline.
 
-## 0.1 — Foundation *(current)*
+## 0.1 — Foundation
 - [x] Project structure, CI, linting, documentation, design system
 - [x] VM library with `.nestvm` bundles and damaged-bundle recovery
 - [x] Configuration model, validation, lifecycle state machine
@@ -21,14 +21,18 @@ starts. Dates are intentionally absent: this is a volunteer-driven open-source p
 - [x] Snapshots with branching (APFS copy-on-write)
 - [x] English and German UI
 
-## 0.2 — Linux machines
-- [ ] Virtualization engine on `Virtualization.framework` (actor-isolated, see ADR 0003)
-- [ ] Image catalog with checksums (`image: ubuntu-24.04`, `distro:version`), plus any ISO
-- [ ] Fast boot path (direct kernel boot) and EFI boot from ISO
-- [ ] `nestctl up` / `down` / `start` / `stop` driven by the Nestfile
+## 0.2 — Linux machines *(in progress)*
+- [x] Virtualization engine on `Virtualization.framework` (main-actor sessions, ADR 0007)
+- [x] EFI boot from any ARM64 installer ISO, sparse disk images, NAT networking with stable MAC
+- [x] Exclusive per-machine lock: the app and `nestctl` never run the same machine twice
+- [x] `nestctl create`, `run` (with optional serial console), `logs`
+- [x] App: create machines, start/pause/resume/shut down, display window with auto-resize, safe quit
+- [x] Devices wired: shared folders (virtiofs), shared clipboard (SPICE), Rosetta, sound output (virtio-snd)
+- [ ] Verified guest-side setup guides for shared folders, clipboard and Rosetta (Ubuntu, Fedora, Debian)
+- [ ] Image catalog with checksums (`image: ubuntu-24.04`, `distro:version`)
+- [ ] Fast boot path (direct kernel boot)
+- [ ] `nestctl up` / `down` driven by the Nestfile
 - [ ] cloud-init provisioning (NoCloud seed), hooks (`preStart`, `postProvision`, …)
-- [ ] Shared folders (virtiofs), shared clipboard, Rosetta for x86-64 binaries, sound (virtio-snd)
-- [ ] VM window with display auto-resize
 
 ## 0.3 — macOS machines and isolation
 - [ ] macOS guests: restore-image download with progress and resume, installation flow

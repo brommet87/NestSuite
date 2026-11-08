@@ -23,6 +23,8 @@ or simply `make run`.
 | Lint | `make lint` |
 | Format | `make format` |
 | Re-render app icon | `make icon` |
+| Build signed `nestctl` | `make nestctl` |
+| Boot test with a real image | `Scripts/integration-boot-test.sh <arm64.iso>` |
 
 ## Signing
 Debug builds are ad-hoc signed (`CODE_SIGN_IDENTITY = "-"`) with the entitlements in

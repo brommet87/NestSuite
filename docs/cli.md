@@ -4,9 +4,12 @@
 and `--library <path>`.
 
 ```bash
-swift build --package-path Packages/NestKit --product nestctl -c release
-cp "$(swift build --package-path Packages/NestKit -c release --show-bin-path)/nestctl" /usr/local/bin/
+make nestctl                         # builds and signs build/nestctl
+cp build/nestctl /usr/local/bin/
 ```
+
+`nestctl run` starts virtual machines itself and therefore needs the `com.apple.security.virtualization`
+entitlement; `make nestctl` signs the binary ad-hoc with it. Other commands work unsigned.
 
 ## Commands
 
@@ -14,6 +17,9 @@ cp "$(swift build --package-path Packages/NestKit -c release --show-bin-path)/ne
 |---|---|
 | `nestctl list` (`ls`) | List machines (damaged ones included, with the reason) |
 | `nestctl inspect <name>` | Show a machine’s configuration |
+| `nestctl create <name> [--cpus] [--memory] [--disk] [--share path[:tag][:ro]]… [--no-clipboard] [--no-rosetta] [--offline]` | Create a Linux machine (resources default to `auto`) |
+| `nestctl run <name> [--iso installer.iso] [--console]` | Start a machine in this terminal until it shuts down (Ctrl-C: shut down; twice: power off; with `--console`: Ctrl-] shuts down) |
+| `nestctl logs <name> [-f]` | Show the serial console output (`Console.log`) |
 | `nestctl validate [path] [--strict]` | Check a Nestfile against this Mac (`--strict`: warnings fail too) |
 | `nestctl clone <source> <name> [--count N]` | Linked clones; with `--count`: `name-1 … name-N` |
 | `nestctl snapshot create <machine> <name> [--note]` | Take a snapshot |
@@ -40,6 +46,7 @@ Machines are found by name, case-insensitively. Snapshots by name or a unique id
 | 65 | Invalid input (Nestfile errors, damaged machine) |
 | 66 | Not found (machine, snapshot or Nestfile) |
 | 73 | Cannot create (name already exists, copy failed) |
+| 75 | Machine busy: it is running in the app or another `nestctl` |
 
 ## JSON output
 - Sizes are always in bytes (`memoryBytes`, `diskBytes`).
@@ -55,6 +62,10 @@ nestctl rm --force $(nestctl list --json | jq -r '.[] | select(.name | startswit
 
 # Gate CI on a valid Nestfile
 nestctl validate --strict --json > nestfile-report.json
+
+# Create a machine and install Linux from an ARM64 installer
+nestctl create dev --memory 4GiB --share ~/Projects/app:workspace
+nestctl run dev --iso ~/Downloads/ubuntu-24.04-live-server-arm64.iso --console
 
 # Try something risky, roll back
 nestctl snapshot create dev before-upgrade
