@@ -119,6 +119,11 @@ public struct ConfigurationBuilder {
             url: bundle.diskImageURL, readOnly: false, cachingMode: .automatic, synchronizationMode: .fsync
         )
         var devices: [VZStorageDeviceConfiguration] = [VZVirtioBlockDeviceConfiguration(attachment: disk)]
+        // cloud-init seed (label CIDATA), read-only. Kept attached: cloud-init only acts on a new instance id.
+        if FileManager.default.fileExists(atPath: bundle.cloudInitSeedURL.path(percentEncoded: false)) {
+            let seed = try VZDiskImageStorageDeviceAttachment(url: bundle.cloudInitSeedURL, readOnly: true)
+            devices.append(VZVirtioBlockDeviceConfiguration(attachment: seed))
+        }
         if case let .installer(url) = bootMedia {
             guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else {
                 throw EngineError.bootMediaMissing(path: url.path(percentEncoded: false))

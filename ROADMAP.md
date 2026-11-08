@@ -28,11 +28,15 @@ starts. Dates are intentionally absent: this is a volunteer-driven open-source p
 - [x] `nestctl create`, `run` (with optional serial console), `logs`
 - [x] App: create machines, start/pause/resume/shut down, display window with auto-resize, safe quit
 - [x] Devices wired: shared folders (virtiofs), shared clipboard (SPICE), Rosetta, sound output (virtio-snd)
-- [ ] Verified guest-side setup guides for shared folders, clipboard and Rosetta (Ubuntu, Fedora, Debian)
-- [ ] Image catalog with checksums (`image: ubuntu-24.04`, `distro:version`)
+- [x] Shared folders (both directions) and Rosetta verified inside real guests: Debian 13, Ubuntu 24.04, AlmaLinux 10 (SELinux enforcing)
+- [x] Image catalog: 15 cloud images and 15 installers from 15 distributions, official sources, checksum-verified
+- [x] Own qcow2 reader, FAT seed writer and SHA-512-crypt (ADR 0008)
+- [x] `nestctl up` from the Nestfile, `nestctl images`, `run --iso <catalog installer>`
+- [x] cloud-init provisioning (user, SSH keys or password, shares, Rosetta), readiness report, hooks
+- [x] App: create from ready-made system, installer or ISO file, with download progress
+- [ ] Built-in serial console view for guests without a graphics driver (e.g. Debian cloud kernel)
+- [ ] Guest-side clipboard verification with a desktop guest
 - [ ] Fast boot path (direct kernel boot)
-- [ ] `nestctl up` / `down` driven by the Nestfile
-- [ ] cloud-init provisioning (NoCloud seed), hooks (`preStart`, `postProvision`, …)
 
 ## 0.3 — macOS machines and isolation
 - [ ] macOS guests: restore-image download with progress and resume, installation flow

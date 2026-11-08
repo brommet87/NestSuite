@@ -8,7 +8,7 @@ version: 1
 machines:
   dev:
     guest: linux              # linux | macOS            (required)
-    image: ubuntu-24.04       # catalog id, ISO path or URL (from 0.2)
+    image: ubuntu-24.04       # catalog cloud image (`nestctl images`)
     cpus: 4                   # number | auto            (default: auto)
     memory: 8GiB              # size | auto              (default: auto)
     disk: 40GiB               # size | auto              (default: auto)
@@ -43,5 +43,14 @@ machines:
 - **Ports:** a host port can be forwarded only once across all machines; ports below 1024 warn.
 - **Paths** in `shares`, `provision` and `hooks` must exist; hook scripts must be executable.
 
-Check a file with `nestctl validate` (add `--strict` in CI). In 0.1, Nestfiles are parsed and
-validated; `nestctl up` creates and starts machines from them in 0.2.
+## Running
+
+```bash
+nestctl validate --strict   # check against this Mac (CI-friendly)
+nestctl up                  # create missing machines, start all, Ctrl-C shuts them down
+```
+
+`nestctl up` creates each missing machine from its catalog cloud image and provisions it with cloud-init:
+your user with your SSH keys, every share mounted at `/mnt/<tag>`, Rosetta when enabled, plus the
+project’s own `provision.cloudInit` file. When the guest reports ready, `postProvision` hooks run once.
+Existing machines are started as they are. Details: [images.md](images.md).

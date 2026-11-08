@@ -17,6 +17,22 @@ All notable changes to this project are documented here. The format follows
   machines; clone, snapshot and rm refuse running machines.
 - `make nestctl` builds a signed CLI; `Scripts/integration-boot-test.sh` boots a real installer image.
 
+### Added — images and `nestctl up`
+- Image catalog with 15 cloud images and 15 installers (Ubuntu, Debian, Fedora, AlmaLinux, Rocky,
+  CentOS Stream, openSUSE, Alpine, Kali, NixOS, Gentoo, Grml) from official servers; file names are
+  resolved from the distributions’ checksum lists and every download is SHA-256/512-verified.
+- Own qcow2 reader (sparse raw output), FAT12 seed writer and SHA-512-crypt (ADR 0008).
+- cloud-init provisioning: user, SSH keys or hashed password, shares at `/mnt/<tag>`, Rosetta
+  (SELinux-safe), readiness report on the console.
+- `nestctl up`, `nestctl images`, `nestctl run --iso <catalog installer>`; hooks `preStart`,
+  `postStart`, `postProvision`, `preStop`.
+- App: “New Virtual Machine” with Ready-Made System / Installer / ISO File and download progress.
+- Machine names are unique (case-insensitive) in the app and CLI.
+
+### Fixed
+- Prepared images without a partition table are rejected (Ubuntu’s `.tar.gz` holds only a root file
+  system; Ubuntu now uses its qcow2 disk image).
+
 ### Changed
 - Machine sessions run on the main actor (ADR 0007, supersedes the queue detail of ADR 0003).
 

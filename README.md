@@ -46,8 +46,9 @@ It is built directly on Apple’s public `Virtualization.framework` and `Hypervi
 | Design system, English + German UI, VoiceOver labels | ✅ 0.1 |
 | Create and run Linux machines from any ARM64 installer ISO — app and `nestctl run` | ✅ 0.2 |
 | Display window with auto-resize, pause/resume, clean shutdown, safe quit | ✅ 0.2 |
-| Shared folders, shared clipboard, Rosetta, sound (wired; guest setup guides pending) | 🚧 0.2 |
-| Image catalog, `nestctl up` from a Nestfile, cloud-init | 🚧 0.2 |
+| 30 official images from 15 distributions, checksum-verified; ready in about a minute with cloud-init | ✅ 0.2 |
+| `nestctl up` from a Nestfile: user, SSH keys, shared folders, Rosetta — set up automatically | ✅ 0.2 |
+| Shared folders and Rosetta verified in Debian, Ubuntu and AlmaLinux guests | ✅ 0.2 |
 | macOS machines | 🗺️ 0.3 |
 | Isolated machines for untrusted code and coding agents, SSH, daemon, HTTP API, MCP server | 🗺️ 0.3–0.5 |
 | `name.nest.local` with automatic HTTPS, port forwarding, file events for hot-reload | 🗺️ 0.5–0.6 |
@@ -99,14 +100,18 @@ nestctl snapshot create dev before-upgrade
 nestctl list --json | jq '.[].name'
 ```
 
-See the [CLI reference](docs/cli.md) and [Nestfile reference](docs/nestfile.md).
+```bash
+nestctl up        # creates the machines from official images and starts them
+```
+
+See the [CLI reference](docs/cli.md), [Nestfile reference](docs/nestfile.md) and [images](docs/images.md).
 
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — modules, data flow, concurrency model
 - [Architecture decisions](docs/adr/) — why things are the way they are
 - [Design system](docs/design/) — principles, tokens, components, voice & tone, accessibility
-- [CLI](docs/cli.md) · [Nestfile](docs/nestfile.md) · [Testing](docs/TESTING.md) · [Releasing](docs/RELEASING.md)
+- [CLI](docs/cli.md) · [Nestfile](docs/nestfile.md) · [Images](docs/images.md) · [Testing](docs/TESTING.md) · [Releasing](docs/RELEASING.md)
 
 ## Contributing
 

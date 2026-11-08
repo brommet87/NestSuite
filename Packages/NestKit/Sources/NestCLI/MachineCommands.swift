@@ -5,6 +5,7 @@ import ArgumentParser
 import Darwin
 import Foundation
 import NestCore
+import NestImages
 import NestSpec
 import NestVirtualization
 
@@ -115,7 +116,10 @@ struct Run: AsyncParsableCommand {
 
     @OptionGroup var options: GlobalOptions
     @Argument(help: "Machine name.") var name: String
-    @Option(help: "Attach a bootable installer ISO for this run.", completion: .file(extensions: ["iso"]))
+    @Option(
+        help: "Attach an installer for this run: a path to an ISO, or a catalog installer such as debian-13-netinst.",
+        completion: .file(extensions: ["iso"])
+    )
     var iso: String?
     @Flag(help: "Connect the terminal to the guest’s serial console.") var console = false
 
@@ -132,9 +136,7 @@ struct Run: AsyncParsableCommand {
         guard let entry = try library.entry(named: name), case let .machine(bundle, config) = entry else {
             throw renderer.fail("no machine named “\(name)” (see `nestctl list`)", code: NestExitCode.notFound)
         }
-        let bootMedia: BootMedia = iso.map {
-            .installer(URL(filePath: ($0 as NSString).expandingTildeInPath).standardizedFileURL)
-        } ?? .none
+        let bootMedia = try await resolveBootMedia(renderer: renderer)
 
         let session = VirtualMachineSession(bundle: bundle, configuration: config)
         let terminal = console ? TerminalConsole() : nil
@@ -198,6 +200,38 @@ struct Run: AsyncParsableCommand {
             default:
                 continue
             }
+        }
+    }
+
+    /// A local ISO path, or a catalog installer that is downloaded and verified first.
+    @MainActor
+    private func resolveBootMedia(renderer: Renderer) async throws -> BootMedia {
+        guard let iso else { return .none }
+        let path = URL(filePath: (iso as NSString).expandingTildeInPath).standardizedFileURL
+        if FileManager.default.fileExists(atPath: path.path(percentEncoded: false)) {
+            return .installer(path)
+        }
+        guard let image = ImageCatalog.image(named: iso) else {
+            throw renderer.fail(
+                "“\(iso)” is neither a file nor a catalog image (see `nestctl images`)",
+                code: NestExitCode.notFound
+            )
+        }
+        guard image.kind == .installer else {
+            throw renderer.fail(
+                "“\(image.id)” is a cloud image; use it as `image:` in a Nestfile",
+                code: NestExitCode.invalidInput
+            )
+        }
+        let store = ImageStore(rootURL: ImageStore.appImagesURL())
+        if store.cachedImage(for: image) == nil {
+            Environment.current.sink.write("↓ downloading \(image.displayName) (≈ \(image.downloadSize))")
+        }
+        let progress = ProgressLine(label: image.id, sink: Environment.current.sink)
+        do {
+            return try await .installer(store.fetch(image) { progress.update($0) })
+        } catch let error as ImageError {
+            throw renderer.fail(error.description, code: NestExitCode.failure)
         }
     }
 

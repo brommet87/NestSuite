@@ -43,6 +43,8 @@ targets:
         product: NestDesign
       - package: NestKit
         product: NestVirtualization
+      - package: NestKit
+        product: NestImages
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.brommet87.NestSuite

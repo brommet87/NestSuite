@@ -66,6 +66,15 @@ struct CloneTests {
         #expect(try library.entries().count == 1)
     }
 
+    @Test("a clone cannot take an existing machine’s name")
+    func cloneNameInUse() throws {
+        let directory = try TemporaryDirectory()
+        let library = VirtualMachineLibrary(rootURL: directory.url)
+        let source = try library.createBundle(for: .fixture(name: "base"))
+        try library.createBundle(for: .fixture(name: "taken"))
+        #expect(throws: VirtualMachineLibraryError.nameInUse("Taken")) { try library.clone(source, as: "Taken") }
+    }
+
     @Test("machines are found by name, case-insensitively, or by file name")
     func lookup() throws {
         let directory = try TemporaryDirectory()

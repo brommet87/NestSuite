@@ -12,5 +12,6 @@ immutable once accepted — to change a decision, write a new ADR that supersede
 | [0005](0005-app-sandbox.md) | Ship inside the App Sandbox | Accepted |
 | [0006](0006-cli-first-and-declarative-machines.md) | CLI-first design and declarative machine definitions | Accepted |
 | [0007](0007-main-actor-machine-sessions.md) | Machine sessions run on the main actor | Accepted |
+| [0008](0008-own-image-format-tools.md) | Own readers and writers for image formats | Accepted |
 
 Template: copy [`template.md`](template.md).

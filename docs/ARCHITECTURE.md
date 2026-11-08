@@ -24,6 +24,7 @@ are recorded as [ADRs](adr/).
 │  │  NestCLI / nestctl   command-line interface (JSON output, exit codes)   │    │
 │  │  NestDesign          tokens, components (EmptyState, StatusBadge, …)    │    │
 │  │  NestVirtualization  adapter to Virtualization.framework                │    │
+│  │  NestImages          catalog, verified downloads, qcow2, cloud-init     │    │
 │  │  NestSpec            Nestfile.yml parsing and validation                │    │
 │  │  NestCore            domain model — no Apple virtualization APIs, no UI │    │
 │  └─────────────────────────────────────────────────────────────────────────┘   │
@@ -44,6 +45,17 @@ The app and `nestctl` are two front ends over the same modules (ADR 0006).
 | `VirtualMachineState` / `VirtualMachineEvent` | Lifecycle state machine. All transitions go through `applying(_:)`. |
 | `VirtualMachineBundle` / `VirtualMachineLibrary` | On-disk `.nestvm` bundles: create, list, load, clone (APFS copy-on-write), trash. |
 | `SnapshotStore` | Snapshot tree inside a bundle (`Snapshots/`), restore and delete with re-parenting. |
+
+### NestImages
+
+| Type | Responsibility |
+|---|---|
+| `ImageCatalog` / `CatalogImage` | Official cloud images and installers; how to find the current file on the distribution’s server |
+| `SourceResolver` | Resolves file name and checksum from checksum lists, folder indexes and pointer files |
+| `ImageStore` | Downloads, verifies (SHA-256/512), unpacks or converts, checks for a partition table, caches per release |
+| `QCOW2Image`, `FATImage`, `SHA512Crypt` | Own format tools (ADR 0008) |
+| `CloudInitSeed` | First-boot configuration and the `CIDATA` volume |
+| `MachineProvisioner` | Bundle + APFS-cloned disk + seed in one step; reads the guest’s readiness report |
 
 ### NestSpec
 

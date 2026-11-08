@@ -18,7 +18,9 @@ public struct NestCtl: AsyncParsableCommand {
         """,
         version: "0.1.0",
         subcommands: [
-            List.self, Inspect.self, Create.self, Run.self, Logs.self, Validate.self, Clone.self, SnapshotCommand.self,
+            List.self, Inspect.self, Create.self, Run.self, UpCommand.self, Logs.self, Images.self, Validate.self,
+            Clone.self,
+            SnapshotCommand.self,
             Remove.self, Host.self,
         ]
     )
@@ -319,7 +321,10 @@ struct Remove: ParsableCommand {
                 throw renderer.fail("no machine named “\(name)”; nothing was removed", code: NestExitCode.notFound)
             }
             try renderer.ensureNotRunning(entry.id, name: name)
-            targets.append(entry)
+            // Two names can point to the same machine (name and file name); remove it once.
+            if !targets.contains(where: { $0.id == entry.id }) {
+                targets.append(entry)
+            }
         }
         var removed: [String] = []
         for entry in targets {

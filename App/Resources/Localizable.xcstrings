@@ -61,12 +61,32 @@
         }
       }
     },
+    "Any ARM64 (aarch64) installer image.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein beliebiges ARM64-Installationsimage (aarch64)."
+          }
+        }
+      }
+    },
     "Ask the operating system to shut down": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Das Betriebssystem bitten, herunterzufahren"
+          }
+        }
+      }
+    },
+    "At least 8 characters": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mindestens 8 Zeichen"
           }
         }
       }
@@ -134,6 +154,7 @@
       }
     },
     "Create": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -231,11 +252,32 @@
       }
     },
     "Download an ARM64 (aarch64) installer image from your distribution, e.g. Ubuntu Server or Fedora.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
             "value": "Lade ein ARM64-Installationsimage (aarch64) deiner Distribution, z. B. Ubuntu Server oder Fedora."
+          }
+        }
+      }
+    },
+    "Downloading and verifying %@…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ wird geladen und geprüft …"
+          }
+        }
+      }
+    },
+    "Downloads the distribution’s official installer. You install the system in the machine’s window.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lädt das offizielle Installationsimage der Distribution. Du installierst das System im Fenster der Maschine."
           }
         }
       }
@@ -296,6 +338,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hardware"
+          }
+        }
+      }
+    },
+    "ISO File": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISO-Datei"
           }
         }
       }
@@ -500,6 +552,16 @@
         }
       }
     },
+    "Password": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passwort"
+          }
+        }
+      }
+    },
     "Pause": {
       "localizations": {
         "de": {
@@ -526,6 +588,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prozessoren"
+          }
+        }
+      }
+    },
+    "Ready-Made System": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fertiges System"
           }
         }
       }
@@ -720,6 +792,16 @@
         }
       }
     },
+    "Start From": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starten mit"
+          }
+        }
+      }
+    },
     "Start from Installer…": {
       "localizations": {
         "de": {
@@ -736,6 +818,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Starte sie im Bibliotheksfenster."
+          }
+        }
+      }
+    },
+    "Starts in about a minute, already set up with your user and shared folders.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Startet in etwa einer Minute – mit deinem Benutzer und den freigegebenen Ordnern bereits eingerichtet."
           }
         }
       }
@@ -757,6 +849,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Unterstützt"
+          }
+        }
+      }
+    },
+    "System": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
           }
         }
       }
@@ -901,6 +1003,16 @@
         }
       }
     },
+    "User": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benutzer"
+          }
+        }
+      }
+    },
     "Version %@": {
       "localizations": {
         "de": {
@@ -947,6 +1059,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Willkommen bei NestSuite"
+          }
+        }
+      }
+    },
+    "You log in with this user and password. The password is stored only as a hash.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du meldest dich mit diesem Benutzer und Passwort an. Das Passwort wird nur als Hash gespeichert."
           }
         }
       }
