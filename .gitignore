@@ -1,0 +1,23 @@
+# Xcode / generated
+*.xcodeproj
+*.xcworkspace
+!Packages/**/*.xcworkspace
+DerivedData/
+build/
+.build/
+.swiftpm/
+*.xcresult
+xcuserdata/
+
+# VM data must never be committed
+*.nestvm/
+*.img
+*.ipsw
+*.iso
+*.qcow2
+
+# macOS
+.DS_Store
+
+# Local tooling
+.env

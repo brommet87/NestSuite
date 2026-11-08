@@ -1,0 +1,5 @@
+#cloud-config
+packages: [nodejs, npm, git]
+runcmd:
+  - mkdir -p /workspace
+  - mount -t virtiofs workspace /workspace

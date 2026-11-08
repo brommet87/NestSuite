@@ -1,0 +1,37 @@
+included:
+  - App/Sources
+  - Packages/NestKit/Sources
+  - Packages/NestKit/Tests
+excluded:
+  - .build
+  - DerivedData
+opt_in_rules:
+  - closure_spacing
+  - contains_over_first_not_nil
+  - empty_count
+  - explicit_init
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - last_where
+  - modifier_order
+  - sorted_first_last
+  - toggle_bool
+  - unowned_variable_capture
+  - vertical_parameter_alignment_on_call
+disabled_rules:
+  - trailing_comma
+  - opening_brace
+line_length:
+  warning: 120
+  error: 160
+identifier_name:
+  excluded: [id, x, y, os]
+type_body_length: 400
+file_length: 600
+force_cast: error
+force_try: error
+cyclomatic_complexity:
+  # Exhaustive switches over enums (state machine, error mapping) are intentional and easy to read.
+  ignores_case_statements: true

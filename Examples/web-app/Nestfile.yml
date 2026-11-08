@@ -1,0 +1,19 @@
+# A typical web project: an app machine with hot-reload on the project folder and a database.
+version: 1
+machines:
+  app:
+    guest: linux
+    image: ubuntu-24.04
+    cpus: auto
+    memory: 4GiB
+    shares:
+      - host: .
+        tag: workspace
+    ports: [3000, "9229:9229"]   # app + Node.js debugger
+    provision:
+      cloudInit: ./cloud-init.yaml
+  db:
+    guest: linux
+    image: debian-13
+    memory: 2GiB
+    ports: ["5432:5432"]
