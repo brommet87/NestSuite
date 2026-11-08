@@ -63,7 +63,7 @@ extension VirtualMachineLibraryError {
                 // swiftlint:disable:next line_length
                 localized: "Created with a newer NestSuite (format \(found), this version reads \(supported)). Update NestSuite to open it."
             )
-        case .bundleAlreadyExists:
+        case .bundleAlreadyExists, .nameInUse:
             String(localized: "A virtual machine with this name already exists.")
         }
     }

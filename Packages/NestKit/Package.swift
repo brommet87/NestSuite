@@ -20,6 +20,7 @@ let package = Package(
         .library(name: "NestCore", targets: ["NestCore"]),
         .library(name: "NestSpec", targets: ["NestSpec"]),
         .library(name: "NestVirtualization", targets: ["NestVirtualization"]),
+        .library(name: "NestImages", targets: ["NestImages"]),
         .library(name: "NestDesign", targets: ["NestDesign"]),
         .executable(name: "nestctl", targets: ["nestctl"]),
     ],
@@ -32,11 +33,12 @@ let package = Package(
         .target(name: "NestCore"),
         .target(name: "NestSpec", dependencies: ["NestCore", .product(name: "Yams", package: "Yams")]),
         .target(name: "NestVirtualization", dependencies: ["NestCore"]),
+        .target(name: "NestImages", dependencies: ["NestCore"]),
         .target(name: "NestDesign", dependencies: ["NestCore"], resources: [.process("Resources")]),
         .target(
             name: "NestCLI",
             dependencies: [
-                "NestCore", "NestSpec", "NestVirtualization",
+                "NestCore", "NestSpec", "NestVirtualization", "NestImages",
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
@@ -48,6 +50,7 @@ let package = Package(
         .testTarget(name: "NestSpecTests", dependencies: ["NestSpec"]),
         .testTarget(name: "NestVirtualizationTests", dependencies: ["NestVirtualization"]),
         .testTarget(name: "NestCLITests", dependencies: ["NestCLI"]),
+        .testTarget(name: "NestImagesTests", dependencies: ["NestImages"]),
     ],
     swiftLanguageModes: [.v6]
 )

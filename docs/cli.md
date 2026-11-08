@@ -18,8 +18,13 @@ entitlement; `make nestctl` signs the binary ad-hoc with it. Other commands work
 | `nestctl list` (`ls`) | List machines (damaged ones included, with the reason) |
 | `nestctl inspect <name>` | Show a machine’s configuration |
 | `nestctl create <name> [--cpus] [--memory] [--disk] [--share path[:tag][:ro]]… [--no-clipboard] [--no-rosetta] [--offline]` | Create a Linux machine (resources default to `auto`) |
+| `nestctl up [path] [--only name]…` | Create missing machines of a Nestfile from catalog images (download, verify, cloud-init) and run them; Ctrl-C shuts all down |
+| `nestctl images` | Catalog of cloud images and installers, with what is cached |
 | `nestctl run <name> [--iso installer.iso] [--console]` | Start a machine in this terminal until it shuts down (Ctrl-C: shut down; twice: power off; with `--console`: Ctrl-] shuts down) |
 | `nestctl logs <name> [-f]` | Show the serial console output (`Console.log`) |
+
+`--iso` accepts a file path or a catalog installer such as `debian-13-netinst` (downloaded and verified
+first). See [images.md](images.md).
 | `nestctl validate [path] [--strict]` | Check a Nestfile against this Mac (`--strict`: warnings fail too) |
 | `nestctl clone <source> <name> [--count N]` | Linked clones; with `--count`: `name-1 … name-N` |
 | `nestctl snapshot create <machine> <name> [--note]` | Take a snapshot |
@@ -62,6 +67,9 @@ nestctl rm --force $(nestctl list --json | jq -r '.[] | select(.name | startswit
 
 # Gate CI on a valid Nestfile
 nestctl validate --strict --json > nestfile-report.json
+
+# A project environment from its Nestfile: created, provisioned and started in about a minute
+nestctl up
 
 # Create a machine and install Linux from an ARM64 installer
 nestctl create dev --memory 4GiB --share ~/Projects/app:workspace

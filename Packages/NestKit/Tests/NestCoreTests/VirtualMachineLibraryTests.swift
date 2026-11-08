@@ -41,14 +41,25 @@ struct VirtualMachineLibraryTests {
         #expect(date == Date(timeIntervalSince1970: 1_800_007_200.25))
     }
 
-    @Test("bundle names are made unique")
+    @Test("machine names are unique, ignoring case")
     func uniqueNames() throws {
         let directory = try TemporaryDirectory()
         let library = VirtualMachineLibrary(rootURL: directory.url)
-        let first = try library.createBundle(for: .fixture())
-        let second = try library.createBundle(for: .fixture())
-        #expect(first.url.lastPathComponent == "Ubuntu.nestvm")
-        #expect(second.url.lastPathComponent == "Ubuntu 2.nestvm")
+        try library.createBundle(for: .fixture(name: "Ubuntu"))
+        #expect(library.isNameInUse("ubuntu "))
+        #expect(throws: VirtualMachineLibraryError.nameInUse("UBUNTU")) {
+            try library.createBundle(for: .fixture(name: "UBUNTU"))
+        }
+    }
+
+    @Test("different names that sanitize to the same file name get distinct bundles")
+    func sanitizedCollisions() throws {
+        let directory = try TemporaryDirectory()
+        let library = VirtualMachineLibrary(rootURL: directory.url)
+        let first = try library.createBundle(for: .fixture(name: "a/b"))
+        let second = try library.createBundle(for: .fixture(name: "a:b"))
+        #expect(first.url.lastPathComponent == "a-b.nestvm")
+        #expect(second.url.lastPathComponent == "a-b 2.nestvm")
     }
 
     @Test("file names are sanitized", arguments: [

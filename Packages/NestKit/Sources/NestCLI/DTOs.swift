@@ -107,6 +107,7 @@ extension VirtualMachineLibraryError {
         case let .configurationUnreadable(_, reason): "config.json is unreadable: \(reason)"
         case let .unsupportedSchemaVersion(found, supported): "format \(found) is newer than supported \(supported)"
         case let .bundleAlreadyExists(url): "\(url.lastPathComponent) already exists"
+        case let .nameInUse(name): "a machine named “\(name)” already exists"
         }
     }
 }

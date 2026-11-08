@@ -54,6 +54,16 @@ public struct VirtualMachineBundle: Hashable, Sendable {
         url.appending(path: "HardwareModel")
     }
 
+    /// cloud-init seed volume for machines created from cloud images; attached read-only when present.
+    public var cloudInitSeedURL: URL {
+        url.appending(path: "CloudInit.img")
+    }
+
+    /// Present once the guest reported that first-boot provisioning finished.
+    public var provisionedMarkerURL: URL {
+        url.appending(path: ".provisioned")
+    }
+
     public var savedStateURL: URL {
         url.appending(path: "SavedState.vzvmsave")
     }
@@ -69,6 +79,8 @@ public enum VirtualMachineLibraryError: Error, Hashable, Sendable {
     case configurationUnreadable(URL, reason: String)
     case unsupportedSchemaVersion(found: Int, supported: Int)
     case bundleAlreadyExists(URL)
+    /// Machine names are unique (case-insensitive), so commands and Nestfiles can refer to them.
+    case nameInUse(String)
 }
 
 /// One entry in the library: either a readable machine or a damaged bundle the user should know about.
@@ -141,6 +153,7 @@ public struct VirtualMachineLibrary: Sendable {
         for configuration: VirtualMachineConfiguration,
         fileManager: FileManager = .default
     ) throws -> VirtualMachineBundle {
+        try ensureNameAvailable(configuration.name, fileManager: fileManager)
         let bundle = VirtualMachineBundle(url: uniqueBundleURL(for: configuration.name, fileManager: fileManager))
         guard !fileManager.fileExists(atPath: bundle.url.path(percentEncoded: false)) else {
             throw VirtualMachineLibraryError.bundleAlreadyExists(bundle.url)
@@ -148,6 +161,24 @@ public struct VirtualMachineLibrary: Sendable {
         try fileManager.createDirectory(at: bundle.url, withIntermediateDirectories: true)
         try save(configuration, to: bundle)
         return bundle
+    }
+
+    /// Whether a machine with this name exists (case-insensitive, ignoring surrounding spaces).
+    public func isNameInUse(_ name: String, fileManager: FileManager = .default) -> Bool {
+        let wanted = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let entries = (try? entries(fileManager: fileManager)) ?? []
+        return entries.contains { entry in
+            if case let .machine(_, configuration) = entry {
+                return configuration.name.caseInsensitiveCompare(wanted) == .orderedSame
+            }
+            return false
+        }
+    }
+
+    func ensureNameAvailable(_ name: String, fileManager: FileManager) throws {
+        if isNameInUse(name, fileManager: fileManager) {
+            throw VirtualMachineLibraryError.nameInUse(name.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
     }
 
     /// Atomically writes the configuration, so a crash never leaves a half-written `config.json`.
@@ -223,6 +254,7 @@ public struct VirtualMachineLibrary: Sendable {
         fileManager: FileManager = .default
     ) throws -> (bundle: VirtualMachineBundle, configuration: VirtualMachineConfiguration) {
         let sourceConfiguration = try loadConfiguration(of: source, fileManager: fileManager)
+        try ensureNameAvailable(name, fileManager: fileManager)
         let target = VirtualMachineBundle(url: uniqueBundleURL(for: name, fileManager: fileManager))
         try fileManager.copyItem(at: source.url, to: target.url)
 

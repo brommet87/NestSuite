@@ -2,6 +2,7 @@
 // Copyright © 2026 NestSuite contributors
 
 import NestCore
+import NestImages
 import NestVirtualization
 import SwiftUI
 
@@ -64,11 +65,40 @@ struct LibraryCommands: Commands {
     ///
     /// `-NestSuiteAutostart <machine name>` starts a machine and opens its window;
     /// `-NestSuiteInstaller <path>` attaches an installer image (must be readable by the sandbox,
-    /// e.g. inside the app container).
+    /// e.g. inside the app container). `-NestSuiteCreateCloud <image>` creates and starts a machine from
+    /// a catalog cloud image (password from `-NestSuitePassword`). `-NestSuiteShowNewMachine YES` opens
+    /// the “New Virtual Machine” sheet.
     @MainActor
     enum DebugAutomation {
         static func run(library: LibraryModel, openWindow: OpenWindowAction) async {
             let defaults = UserDefaults.standard
+            if defaults.bool(forKey: "NestSuiteShowNewMachine") {
+                library.isShowingNewMachine = true
+            }
+            if let imageID = defaults.string(forKey: "NestSuiteCreateCloud"),
+               let image = ImageCatalog.image(named: imageID)
+            {
+                var config = VirtualMachineConfiguration.recommended(
+                    for: .linux,
+                    name: image.family,
+                    host: library.host
+                )
+                config.memorySize = .gibibytes(2)
+                do {
+                    let bundle = try await library.provisionMachine(
+                        config, from: image, password: defaults.string(forKey: "NestSuitePassword") ?? "nestsuite-test"
+                    ) { _ in }
+                    let session = library.session(
+                        for: bundle,
+                        configuration: library.configuration(of: bundle) ?? config
+                    )
+                    openWindow(id: "machine", value: bundle.url)
+                    await library.start(session)
+                } catch {
+                    library.engineError = String(describing: error)
+                }
+                return
+            }
             guard let name = defaults.string(forKey: "NestSuiteAutostart"),
                   let entry = library.entries.first(where: {
                       if case let .machine(_, config) = $0 {

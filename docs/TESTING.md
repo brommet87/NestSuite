@@ -8,6 +8,8 @@
 | `NestVirtualization` tests | Swift Testing | `swift test`, CI | Host capability mapping; configuration building (0.2) |
 | App tests | Swift Testing via `xcodebuild test` | CI | View models with fake library/workspace/engine |
 | Engine tests | Swift Testing | `swift test`, CI | Device configuration, sparse disks, identity files, locking — no entitlement needed |
+| Image tests | Swift Testing | `swift test`, CI | Catalog integrity, source resolution against a stub server, qcow2 against hand-built fixtures, FAT seed read back, SHA-512-crypt reference vectors |
+| End-to-end (manual) | `nestctl up` with a Nestfile | locally | Real download, provisioning and in-guest checks; see [images.md](images.md#verified-end-to-end) |
 | Integration test | `Scripts/integration-boot-test.sh <iso>` | locally | Boots a real ARM64 installer with a signed `nestctl`, checks it stays up, refuses a second start and stops cleanly |
 | Manual UI review | checklist | every UI PR | See [design/ACCESSIBILITY.md](design/ACCESSIBILITY.md) |
 

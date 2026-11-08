@@ -3,6 +3,7 @@
 
 import AppKit
 import NestCore
+import NestImages
 import NestVirtualization
 import Observation
 
@@ -134,6 +135,51 @@ final class LibraryModel {
         } catch {
             engineError = (error as? EngineError)?.description ?? error.localizedDescription
         }
+    }
+
+    /// Creates a machine from a catalog cloud image: downloads and verifies the image if needed, clones
+    /// the disk and writes the cloud-init seed. Progress is reported between 0 and 1.
+    func provisionMachine(
+        _ configuration: VirtualMachineConfiguration,
+        from image: CatalogImage,
+        password: String,
+        progress: @escaping @Sendable (Double) -> Void
+    ) async throws -> VirtualMachineBundle {
+        guard let library else { throw VirtualMachineLibraryError.configurationMissing(URL(filePath: "/")) }
+        let store = try ImageStore(rootURL: ImageStore.defaultRootURL())
+        let seed = CloudInitSeed(
+            instanceID: configuration.id.uuidString,
+            hostname: configuration.name,
+            userName: NSUserName(),
+            shares: configuration.sharedFolders.map { CloudInitSeed.Share(tag: $0.name) },
+            rosetta: configuration.isRosettaEnabled,
+            passwordHash: SHA512Crypt.hash(password)
+        )
+        let bundle = try await MachineProvisioner(library: library, store: store)
+            .provision(configuration, from: image, seed: seed) { progress($0.fractionCompleted ?? 0) }
+        await reload()
+        selection = bundle.url
+        return bundle
+    }
+
+    /// Downloads and verifies a catalog installer ISO (cached after the first time).
+    func prepareInstaller(_ image: CatalogImage, progress: @escaping @Sendable (Double) -> Void) async throws -> URL {
+        let store = try ImageStore(rootURL: ImageStore.defaultRootURL())
+        return try await store.fetch(image) { progress($0.fractionCompleted ?? 0) }
+    }
+
+    func isNameInUse(_ name: String) -> Bool {
+        library?.isNameInUse(name) ?? false
+    }
+
+    /// The saved configuration of a bundle (provisioning may adjust it, e.g. the disk size).
+    func configuration(of bundle: VirtualMachineBundle) -> VirtualMachineConfiguration? {
+        entries.lazy.compactMap { entry -> VirtualMachineConfiguration? in
+            if case let .machine(candidate, configuration) = entry, candidate == bundle {
+                return configuration
+            }
+            return nil
+        }.first
     }
 
     /// Creates a new machine and selects it.
